@@ -1,30 +1,25 @@
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import type { PropsWithChildren } from 'react';
+import React, { useState } from 'react';
 import {
+  Image,
   ImageSourcePropType,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
+  Pressable,
   StyleSheet,
   Text,
-  Image,
-  useColorScheme,
-  View,
+  View
 } from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-import One from './assets/One.png';
-import Two from './assets/Two.png';
-import Three from './assets/Three.png';
-import DiceFour from './assets/Four.png';
+import RNReactNativeHapticFeedback, { trigger } from 'react-native-haptic-feedback';
 import DiceFive from './assets/Five.png';
+import DiceFour from './assets/Four.png';
+import One from './assets/One.png';
 import Six from './assets/Six.png';
+import Three from './assets/Three.png';
+import Two from './assets/Two.png';
+
+const options = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false,
+};
 
 type DiceProps = PropsWithChildren<{imageUrl: ImageSourcePropType}>
 
@@ -38,10 +33,47 @@ const Dice = ({imageUrl}: DiceProps):JSX.Element => {
     </View>
   )
 }
+
 function App(): JSX.Element {
+
+  const [diceImage, setDiceImage] = useState<ImageSourcePropType>(One) 
+
+  const rollDice = () => {
+    let randomNumber = Math.floor(Math.random() * 6) + 1;
+
+    switch(randomNumber){
+      case 1:
+        setDiceImage(One)
+        break;
+      case 2:
+        setDiceImage(Two)
+        break;
+      case 3:
+        setDiceImage(Three)
+        break;
+      case 4:
+        setDiceImage(DiceFour)
+        break;
+      case 5:
+        setDiceImage(DiceFive)
+        break;
+      case 6:
+        setDiceImage(Six)
+        break;
+      default:
+        setDiceImage(One)
+        break;
+    }
+     trigger("notificationSuccess", options)
+    // RNReactNativeHapticFeedback.trigger("impactHeavy", options);
+  }
+
   return (
-    <View>
-      <Text>Hello</Text>
+    <View style={styles.container}>
+      <Dice imageUrl={diceImage}/>
+      <Pressable onPress={rollDice}>
+        <Text style={styles.rollDiceBtnText}>Roll the dice</Text>
+      </Pressable>
     </View>
   );
 }
